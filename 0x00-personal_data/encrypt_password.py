@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""encrypt_password module"""
+"""A module for encrypting passwords.
+"""
 import bcrypt
 
 
-def hash_password(password: str) -> str:
+def hash_password(password: str) -> bytes:
     """Converts a plaintext password to a hashed password"""
 
     bytes = password.encode("utf-8")
