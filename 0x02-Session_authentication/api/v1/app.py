@@ -29,6 +29,16 @@ elif os.getenv("AUTH_TYPE") == "session_auth":
 
     auth = SessionAuth()
 
+elif os.getenv("AUTH_TYPE") == "session_exp_auth":
+    from api.v1.auth.session_exp_auth import SessionExpAuth
+
+    auth = SessionExpAuth()
+
+elif os.getenv("AUTH_TYPE") == "session_db_auth":
+    from api.v1.auth.session_db_auth import SessionDBAuth
+
+    auth = SessionDBAuth()
+
 
 @app.errorhandler(404)
 def not_found(error) -> str:
@@ -66,8 +76,8 @@ def request_handler() -> None:
             return
 
         if (
-            auth.authorization_header(request) is None and
-            auth.session_cookie(request) is None
+            auth.authorization_header(request) is None
+            and auth.session_cookie(request) is None
         ):
             abort(401)
         current_user = auth.current_user(request)
