@@ -2,6 +2,8 @@
 """DB module
 """
 from sqlalchemy import create_engine
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
@@ -37,3 +39,14 @@ class DB:
             self._session.rollback()
             new_user = None
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """Finds a user by the filter arguments"""
+        for k, v in kwargs.items():
+            if not hasattr(User, k):
+                raise InvalidRequestError
+        user = self._session.query(User).filter_by(**kwargs).first()
+
+        if not user:
+            raise NoResultFound
+        return user
