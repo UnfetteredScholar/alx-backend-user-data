@@ -50,3 +50,19 @@ class DB:
         if not user:
             raise NoResultFound
         return user
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Finds a user by the filter arguments"""
+        user = self.find_user_by()
+        if not user:
+            return
+        new_values = {}
+        for k, v in kwargs.items():
+            if not hasattr(User, k):
+                raise ValueError
+            new_values[getattr(User, k)] = v
+
+        self._session.query(User).filter(User.id == user_id).update(
+            new_values, synchronize_session=False
+        )
+        self._session.commit()
